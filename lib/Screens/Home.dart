@@ -5,7 +5,7 @@ import 'package:lets_head_out/utils/TextStyles.dart';
 import 'package:lets_head_out/utils/consts.dart';
 
 import 'Notifications.dart';
-import 'Orders.dart';
+import 'MyLocations.dart';
 import 'Profile.dart';
 import 'SignInPage.dart';
 
@@ -59,7 +59,7 @@ class _HomeState extends State<Home> {
             BottomNavyBarItem(
               icon: Icon(Icons.line_style),
               title: Text(
-                "Orders",
+                "Locations",
                 style: TextStyle(fontFamily: "nunito"),
               ),
               inactiveColor: kgreyDark,
@@ -95,7 +95,7 @@ class _HomeState extends State<Home> {
           },
           children: <Widget>[
             Dashboard(),
-            Orders(),
+            MyLocations(),
             Notifications(),
             Profile(),
           ],

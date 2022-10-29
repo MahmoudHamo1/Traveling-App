@@ -3,7 +3,12 @@ import 'package:lets_head_out/utils/Buttons.dart';
 import 'package:lets_head_out/utils/TextStyles.dart';
 import 'package:lets_head_out/utils/consts.dart';
 
+import '../shop.dart';
+
 class OverViewPage extends StatefulWidget {
+  final Shop shop;
+
+  const OverViewPage({Key key, this.shop}) : super(key: key);
   @override
   _OverViewPageState createState() => _OverViewPageState();
 }

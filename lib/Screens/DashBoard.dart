@@ -31,30 +31,30 @@ class _DashboardState extends State<Dashboard> {
               padding: const EdgeInsets.only(left:16.0,right: 16.0,bottom: 16.0),
 
               child: Column(children: <Widget>[
-                // Padding(
-                //   padding: const EdgeInsets.only(bottom: 16.0),
-                //   child: Align(
-                //       alignment: Alignment.centerLeft,
-                //       child: BoldText("Daily Offers", 20.0, kblack)),
-                // ),
-                // Container(
-                //   width: 330,
-                //   height: 150,
-                //   child: ListView(
-                //     scrollDirection: Axis.horizontal,
-                //     children: <Widget>[
-                //       buildContainer(),
-                //       SizedBox(
-                //         width: 20,
-                //       ),
-                //       buildContainer(),
-                //       SizedBox(
-                //         width: 20,
-                //       ),
-                //       buildContainer(),
-                //     ],
-                //   ),
-                // ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: BoldText("Daily Offers", 20.0, kblack)),
+                ),
+                Container(
+                  width: 330,
+                  height: 150,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: <Widget>[
+                      buildContainer(),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      buildContainer(),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      buildContainer(),
+                    ],
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: Row(

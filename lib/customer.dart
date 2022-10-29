@@ -82,6 +82,29 @@ class Customer  {
     }
     return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
   }
+
+  Future <BackendMessage> addHotel(String name, String price, String location, String about) async {
+    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/add_hotel.php"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'user_id': id, 'name': name, 'price': price, 'location': location, 'about': about})
+    );
+    var jsonResponse = jsonDecode(response.body);
+
+    return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
+  }
+
+  Future <dynamic> getCreatedHotels() async {
+    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/user_hotels.php"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'id': id})
+    );
+    var jsonResponse = jsonDecode(response.body);
+    return jsonResponse;
+  }
 }
 
 class BackendMessage {
