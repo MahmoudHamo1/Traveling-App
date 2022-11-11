@@ -63,7 +63,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ),
                   WideButton.bold("Register",  () async {
                     Customer customer = Customer();
-                    BackendMessage response = await customer.signupToBackend(nameController.text, emailController.text, passwordController.text);
+                    BackendMessage response = await customer.signupToBackend(nameController.text, emailController.text, passwordController.text, '');
                     if (response.status == 'success'){
                       Navigator.push(context, MaterialPageRoute(builder: (_) {
                         return Home();

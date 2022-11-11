@@ -9,7 +9,7 @@ import 'package:lets_head_out/utils/TextStyles.dart';
 import 'package:lets_head_out/utils/consts.dart';
 import 'package:lets_head_out/utils/imageContainer.dart';
 
-import 'OverViewScreen.dart';
+import 'HotelOverViewScreen.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -145,7 +145,7 @@ class _DashboardState extends State<Dashboard> {
     return GestureDetector(
       onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: (_) {
-          return OverViewPage();
+          return HotelOverViewScreen();
         }));
       },
       child: Container(

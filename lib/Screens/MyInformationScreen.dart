@@ -116,20 +116,6 @@ class _MyInformationScreenState extends State<MyInformationScreen> {
 
 
 
-  Widget InformationItem(String title, String body, _onTap) {
-    return InkWell(
-      onTap: _onTap,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 16,right: 16,bottom: 9),
-        child: Row(
-          children: <Widget>[
-            NormalText(title,kblack,25.0),
-            SizedBox(width: 8,),
-            NormalText(body,kblack,20.0)
-          ],
-        ),
-      ),
-    );
-  }
+
 }
 

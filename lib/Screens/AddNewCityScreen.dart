@@ -9,14 +9,13 @@ import 'package:lets_head_out/utils/forms.dart';
 import 'package:lets_head_out/customer.dart';
 import 'package:lets_head_out/Screens/Home.dart';
 
-class AddLocationScreen extends StatefulWidget {
+class AddNewCityScreen extends StatefulWidget {
   @override
-  _AddLocationScreenState createState() => _AddLocationScreenState();
+  _AddNewCityScreenState createState() => _AddNewCityScreenState();
 }
 
-class _AddLocationScreenState extends State<AddLocationScreen> {
+class _AddNewCityScreenState extends State<AddNewCityScreen> {
   TextEditingController nameController = TextEditingController();
-  TextEditingController priceController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   TextEditingController aboutController = TextEditingController();
 
@@ -27,7 +26,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
         appBar: AppBar(
           elevation: 0.0,
           centerTitle: true,
-          title: NormalText("Add New Hotel", kblack, 20.0),
+          title: NormalText("Add New City", kblack, 20.0),
           backgroundColor: kwhite,
           iconTheme: IconThemeData(
             color: Colors.black,
@@ -43,10 +42,6 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                   SizedBox(
                     height: 30,
                   ),
-                  Container(width: 340.0, child: NormalForm(Icons.price_change, "Price per night", priceController)),
-                  SizedBox(
-                    height: 30,
-                  ),
                   Container(width: 340.0, child: NormalForm(Icons.location_on_rounded, "Location", locationController)),
                   SizedBox(
                     height: 30,
@@ -55,9 +50,9 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                   SizedBox(
                     height: 25,
                   ),
-                  WideButton.bold("Add Hotel", () async {
+                  WideButton.bold("Add City", () async {
                     Customer customer = Customer();
-                    BackendMessage response = await customer.addHotel(nameController.text, priceController.text, locationController.text, aboutController.text);
+                    BackendMessage response = await customer.addCity(nameController.text, locationController.text, aboutController.text, '');
                     if (response.status == 'success'){
                       showMyDialog(context, 'Success', response.message);
                     } else {

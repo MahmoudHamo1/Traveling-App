@@ -76,3 +76,107 @@ final kgreyFill =  Colors.grey.shade100;
   );
 }
 
+ Widget InformationItem(String title, String body, _onTap) {
+  return InkWell(
+   onTap: _onTap,
+   child: Padding(
+    padding: const EdgeInsets.only(left: 16,right: 16,bottom: 9),
+    child: Row(
+     children: <Widget>[
+      NormalText(title,kblack,25.0),
+      SizedBox(width: 8,),
+      NormalText(body,kblack,20.0)
+     ],
+    ),
+   ),
+  );
+ }
+
+ class BoldText extends StatelessWidget {
+  final double  size;
+  final String text;
+  final Color color;
+  bool isVeryBold=false;
+
+  BoldText(this.text, this.size,this.color);
+  BoldText.veryBold(this.text,this.size,this.color,this.isVeryBold);
+
+  @override
+  Widget build(BuildContext context) {
+   return Text(text,style:TextStyle(fontFamily: "nunito" ,fontWeight: isVeryBold?FontWeight.w900: FontWeight.w700,color:color,fontSize: size));
+  }
+ }
+
+ class NormalText extends StatelessWidget {
+  final double  size;
+  final String text;
+  final Color color;
+
+  NormalText(this.text,this.color, this.size);
+
+  @override
+  Widget build(BuildContext context) {
+   return Text(text,style:TextStyle(fontFamily: "nunito" ,fontWeight:FontWeight.w300,color:color,fontSize: size));
+  }
+ }
+
+Widget reviewProfile(String name,String review,String date) {
+ return Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: <Widget>[
+
+   Row(
+    children: <Widget>[
+     Container(
+      width: 24,
+      height: 24,
+      child: CircleAvatar(
+       backgroundColor: kgreyDark,
+       child: Icon(
+        Icons.person,
+        size: 12,
+       ),
+      ),
+     ),
+     SizedBox(
+      width: 10,
+     ),
+     BoldText(name, 16, kblack)
+    ],
+   ),
+   SizedBox(height: 10,),
+   // Row(
+   //   children: <Widget>[
+   //     Container(
+   //       width: 50.0,
+   //       decoration: BoxDecoration(
+   //         color: korange,
+   //         borderRadius:
+   //         BorderRadius.circular(10.0),
+   //       ),
+   //       child: Row(
+   //         mainAxisAlignment:
+   //         MainAxisAlignment.center,
+   //         crossAxisAlignment:
+   //         CrossAxisAlignment.center,
+   //         children: <Widget>[
+   //           Icon(
+   //             Icons.star,
+   //             color: kwhite,
+   //             size: 15.0,
+   //           ),
+   //           BoldText(review, 15.0, kwhite),
+   //         ],
+   //       ),
+   //     ),
+   //     SizedBox(width: 10,),
+   //     NormalText(date,kgreyDark,12.0)
+   //   ],
+   //
+   // ),
+   // SizedBox(height: 10,),
+   NormalText(review ,kblack,12.0),
+   SizedBox(height: 10,),
+  ],
+ );
+}
