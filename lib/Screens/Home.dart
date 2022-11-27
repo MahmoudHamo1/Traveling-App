@@ -1,9 +1,15 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:lets_head_out/Screens/DashBoard.dart';
-import 'package:lets_head_out/utils/TextStyles.dart';
-import 'package:lets_head_out/utils/consts.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:trawell/Screens/DashBoard.dart';
+import 'package:trawell/customer.dart';
+import 'package:trawell/utils/TextStyles.dart';
+import 'package:trawell/utils/consts.dart';
 
+import '../main.dart';
+import 'MyTools.dart';
 import 'Notifications.dart';
 import 'MyLocations.dart';
 import 'Profile.dart';
@@ -17,12 +23,15 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _cIndex = 0;
 
-  PageController _pageController;
+  late PageController _pageController;
+
+
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
+    setupFirebaseMessaging();
   }
 
   @override
@@ -66,6 +75,15 @@ class _HomeState extends State<Home> {
               activeColor: kdarkBlue,
             ),
             BottomNavyBarItem(
+              icon: Icon(Icons.construction),
+              title: Text(
+                "Tools",
+                style: TextStyle(fontFamily: "nunito"),
+              ),
+              inactiveColor: kgreyDark,
+              activeColor: kdarkBlue,
+            ),
+            BottomNavyBarItem(
               icon: Icon(Icons.notifications),
               title: Text(
                 "Notifications",
@@ -96,11 +114,34 @@ class _HomeState extends State<Home> {
           children: <Widget>[
             Dashboard(),
             MyLocations(),
+            MyTools(),
             Notifications(),
             Profile(),
           ],
         ),
       ),
     );
+  }
+
+
+  void setupFirebaseMessaging() async {
+
+    await FirebaseMessaging.instance.subscribeToTopic('allUsers');
+
+    // this code used when you want to show/do something when notification comes while the app is in foreground
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      dynamic payload = message.data ;
+      AndroidNotification? android = message.notification?.android;
+      if (notification != null && android != null) {
+        debugPrint('receive front message');
+        debugPrint('notification.title: ${notification?.title}');
+        debugPrint('notification.body: ${notification?.body}');
+        debugPrint('notification.payload: ${payload['payload']}');
+        setState(() {
+          notificationsList.add(NotificationMessage(notification.title!, notification.body!, payload['payload']));
+        });
+      }
+    });
   }
 }

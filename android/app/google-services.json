@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "724717562904",
+    "project_id": "travelling-app-fac27",
+    "storage_bucket": "travelling-app-fac27.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:724717562904:android:d12bed5a45721014aa676d",
+        "android_client_info": {
+          "package_name": "com.example.trawell"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "724717562904-ihbp8kisl4tsa5grna3fdtr50j4uqngu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4nOHiEOAPmgle2JePFfudS9g0xnQEh6I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "724717562904-ihbp8kisl4tsa5grna3fdtr50j4uqngu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

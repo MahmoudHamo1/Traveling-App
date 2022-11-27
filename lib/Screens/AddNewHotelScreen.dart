@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:lets_head_out/Screens/SignInPage.dart';
-import 'package:lets_head_out/utils/Buttons.dart';
-import 'package:lets_head_out/utils/TextStyles.dart';
-import 'package:lets_head_out/utils/consts.dart';
-import 'package:lets_head_out/utils/forms.dart';
-import 'package:lets_head_out/customer.dart';
-import 'package:lets_head_out/Screens/Home.dart';
+import 'package:trawell/Screens/SignInPage.dart';
+import 'package:trawell/utils/Buttons.dart';
+import 'package:trawell/utils/TextStyles.dart';
+import 'package:trawell/utils/consts.dart';
+import 'package:trawell/utils/forms.dart';
+import 'package:trawell/customer.dart';
+import 'package:trawell/Screens/Home.dart';
 
 class AddNewHotelScreen extends StatefulWidget {
   @override
@@ -59,10 +59,11 @@ class _AddNewHotelScreenState extends State<AddNewHotelScreen> {
                     Customer customer = Customer();
                     BackendMessage response = await customer.addHotel(nameController.text, priceController.text, locationController.text, aboutController.text, '');
                     if (response.status == 'success'){
-                      showMyDialog(context, 'Success', response.message);
+                      await showMyDialog(context, 'Success', response.message);
                     } else {
-                      showMyDialog(context, 'Error', response.message);
+                      await showMyDialog(context, 'Error', response.message);
                     }
+                    Navigator.pop(context,);
                   }, true),
                 ])
             )

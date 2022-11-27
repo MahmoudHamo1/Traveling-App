@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
-import 'package:lets_head_out/utils/consts.dart';
+import 'package:trawell/utils/consts.dart';
 
 class Customer  {
 
@@ -12,7 +12,7 @@ class Customer  {
   String name = '';
   String email = '';
   String password = '';
-  String imgUrl = '';
+  String imageUrl = '';
 
   factory Customer() {
     return _instance ;
@@ -22,6 +22,7 @@ class Customer  {
     Response response = await post(Uri.parse("https://travelingapp.000webhostapp.com/singin.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          'Access-Control-Allow-Origin': '*'
         },
         body: jsonEncode({'email': email, 'password': password}));
 
@@ -31,25 +32,25 @@ class Customer  {
       this.id = jsonResponse['message']['id'].toString();
       this.name = jsonResponse['message']['name'];
       this.email = jsonResponse['message']['email'];
-      this.imgUrl = jsonResponse['message']['image_url'];
+      this.imageUrl = jsonResponse['message']['image_url'];
       this.password = jsonResponse['message']['password'];
     }
 
     return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
   }
-  Future <BackendMessage> signupToBackend(String name, String email, String password, String imgUrl) async {
+  Future <BackendMessage> signupToBackend(String name, String email, String password, String imageUrl) async {
     Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/singup.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({'name': name, 'email': email,  'image_url': imgUrl, 'password': password, })
+        body: jsonEncode({'name': name, 'email': email,  'image_url': imageUrl, 'password': password, })
     );
     var jsonResponse = jsonDecode(response.body);
     if (jsonResponse['status'] == "success") {
       this.id = jsonResponse['message']['id'].toString();
       this.name = jsonResponse['message']['name'];
       this.email = jsonResponse['message']['email'];
-      this.imgUrl = jsonResponse['message']['image_url'];
+      this.imageUrl = jsonResponse['message']['image_url'];
       this.password = jsonResponse['message']['password'];
     }
 
@@ -83,34 +84,34 @@ class Customer  {
     return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
   }
 
-  Future <BackendMessage> addHotel(String name, String price, String location, String about, String imgUrl) async {
+  Future <BackendMessage> addHotel(String name, String price, String location, String about, String imageUrl) async {
     Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/add_hotel.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({'user_id': id, 'name': name, 'price': price, 'location': location, 'about': about, 'image_url': imgUrl})
+        body: jsonEncode({'user_id': id, 'name': name, 'price': price, 'location': location, 'about': about, 'image_url': imageUrl})
     );
     var jsonResponse = jsonDecode(response.body);
 
     return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
   }
-  Future <BackendMessage> addCity(String name, String location, String about, String imgUrl) async {
+  Future <BackendMessage> addCity(String name, String location, String about, String imageUrl) async {
     Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/add_city.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({'user_id': id, 'name': name, 'location': location, 'about': about, 'image_url': imgUrl})
+        body: jsonEncode({'user_id': id, 'name': name, 'location': location, 'about': about, 'image_url': imageUrl})
     );
     var jsonResponse = jsonDecode(response.body);
 
     return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
   }
-  Future <BackendMessage> addTimeline(String title, String body, String imgUrl) async {
+  Future <BackendMessage> addTimeline(String title, String body, String imageUrl) async {
     Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/add_timeline.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({'user_id': id, 'title': title, 'body': body, 'image_url': imgUrl})
+        body: jsonEncode({'user_id': id, 'title': title, 'body': body, 'image_url': imageUrl})
     );
     var jsonResponse = jsonDecode(response.body);
 
@@ -278,15 +279,52 @@ class Customer  {
     return jsonResponse;
   }
 
+  Future <BackendMessage> deleteHotel(String hotelId) async {
+    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/delete_location.php"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'hotel_id': hotelId, "city_id": null, "timeline_id": null, })
+    );
+    var jsonResponse = jsonDecode(response.body);
+
+    return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
+  }
+  Future <BackendMessage> deleteCity(String cityId) async {
+    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/delete_location.php"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'hotel_id': null, "city_id": cityId, "timeline_id": null, })
+    );
+    var jsonResponse = jsonDecode(response.body);
+
+    return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
+  }
+  Future <BackendMessage> deleteTimeline(String timelineId) async {
+    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/delete_location.php"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'hotel_id': null, "city_id": null, "timeline_id": timelineId, })
+    );
+    var jsonResponse = jsonDecode(response.body);
+
+    return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
+  }
 }
 
 class BackendMessage {
-  String status;
-  String message;
+  String status = '';
+  String message = '';
 
-  BackendMessage(String status, String message) {
-    this.status = status;
-    this.message = message;
-  }
+  BackendMessage(this.status, this.message);
+}
 
+class NotificationMessage {
+  String title = '';
+  String body = '';
+  dynamic payload;
+
+  NotificationMessage(this.title, this.body, this.payload);
 }

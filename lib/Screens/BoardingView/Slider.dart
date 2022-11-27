@@ -1,6 +1,6 @@
 
 import 'package:flutter/cupertino.dart';
-import 'package:lets_head_out/utils/consts.dart';
+import 'package:trawell/utils/consts.dart';
 
 class Slider {
   final String sliderImageUrl;
@@ -8,9 +8,9 @@ class Slider {
   final String sliderSubHeading;
 
   Slider(
-      {@required this.sliderImageUrl,
-        @required this.sliderHeading,
-        @required this.sliderSubHeading});
+      {required this.sliderImageUrl,
+        required this.sliderHeading,
+        required this.sliderSubHeading});
 }
 
 final sliderArrayList = [

@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:lets_head_out/Screens/SignInPage.dart';
-import 'package:lets_head_out/utils/Buttons.dart';
-import 'package:lets_head_out/utils/TextStyles.dart';
-import 'package:lets_head_out/utils/consts.dart';
-import 'package:lets_head_out/utils/forms.dart';
-import 'package:lets_head_out/customer.dart';
-import 'package:lets_head_out/Screens/Home.dart';
+import 'package:trawell/Screens/SignInPage.dart';
+import 'package:trawell/utils/Buttons.dart';
+import 'package:trawell/utils/TextStyles.dart';
+import 'package:trawell/utils/consts.dart';
+import 'package:trawell/utils/forms.dart';
+import 'package:trawell/customer.dart';
+import 'package:trawell/Screens/Home.dart';
+
+import 'ChoseImageScreen.dart';
 
 class MyInformationScreen extends StatefulWidget {
   @override
@@ -16,8 +18,8 @@ class MyInformationScreen extends StatefulWidget {
 
 class _MyInformationScreenState extends State<MyInformationScreen> {
   Customer customer = Customer();
-  TextEditingController nameController;
-  TextEditingController passwordController;
+  late TextEditingController nameController;
+  late TextEditingController passwordController;
 
   @override
   void initState() {
@@ -55,10 +57,23 @@ class _MyInformationScreenState extends State<MyInformationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    CircleAvatar(
-                      backgroundColor: kgreyDark,
-                      radius: 50,
-                      child: Icon(Icons.person,size: 50,),
+                    InkWell(
+                      child: (customer.imageUrl == '')
+                          ? CircleAvatar(
+                          backgroundColor: kgreyDark,
+                          radius: 50,
+                          child:  const Icon(Icons.person,size: 50,)
+                      )
+                          : CircleAvatar(
+                          backgroundColor: kgreyDark,
+                          radius: 50,
+                          backgroundImage: NetworkImage(customer.imageUrl)
+                      ),
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) {
+                          return ChoseImageScreen(id: customer.id, isForShop: false, isForCity: false, isForTimeline: false, key: Key('imagePikkeruser2'));
+                        }));
+                      },
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,

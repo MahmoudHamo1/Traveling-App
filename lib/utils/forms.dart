@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:lets_head_out/utils/consts.dart';
+import 'package:trawell/utils/consts.dart';
 
 class PasswordForm extends StatefulWidget {
   final TextEditingController controller;

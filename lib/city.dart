@@ -1,22 +1,26 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
-import 'package:lets_head_out/utils/consts.dart';
+import 'package:trawell/utils/consts.dart';
 
 class City  {
 
-  String id;
-  String name;
-  String location;
-  String about;
-  String userId;
+  String id = '';
+  String name= '';
+  String location= '';
+  String about= '';
+  String userId= '';
+  String averageLikes= '';
+  String imageUrl= '';
 
-  City(String id, String name, String location, String about, String useId) {
-    this.id = id;
-    this.name = name;
-    this.location = location;
-    this.about = about;
-    this.userId = useId;
-  }
+  City(
+      this.id,
+      this.name,
+      this.location,
+      this.about,
+      this.userId,
+      this.averageLikes,
+      this.imageUrl
+  );
 
 }

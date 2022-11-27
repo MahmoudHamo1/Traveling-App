@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:lets_head_out/Screens/AddNewCityScreen.dart';
-import 'package:lets_head_out/Screens/TimelineReviewsScreen.dart';
-import 'package:lets_head_out/customer.dart';
-import 'package:lets_head_out/utils/RecommendationImage.dart';
-import 'package:lets_head_out/utils/TextStyles.dart';
-import 'package:lets_head_out/utils/consts.dart';
-import 'package:lets_head_out/timeline.dart';
+import 'package:trawell/Screens/AddNewCityScreen.dart';
+import 'package:trawell/Screens/TimelineOverViewScreen.dart';
+import 'package:trawell/customer.dart';
+import 'package:trawell/utils/RecommendationImage.dart';
+import 'package:trawell/utils/TextStyles.dart';
+import 'package:trawell/utils/consts.dart';
+import 'package:trawell/timeline.dart';
 
 import '../city.dart';
 import '../shop.dart';
@@ -24,14 +24,15 @@ class MyLocations extends StatefulWidget {
 }
 
 class _MyLocationsState extends State<MyLocations> with SingleTickerProviderStateMixin {
-  TabController tabController;
-  ScrollController hotelsScrollController;
-  ScrollController citiesScrollController;
-  ScrollController timelinesScrollController;
-  Customer customer;
-  Future getUserHotelsDataFuture;
-  Future getUserCitiesDataFuture;
-  Future getUserTimelinesDataFuture;
+  late TabController tabController;
+  late ScrollController hotelsScrollController;
+  late ScrollController citiesScrollController;
+  late ScrollController timelinesScrollController;
+  late Customer customer;
+  late Future getUserHotelsDataFuture;
+  late Future getUserCitiesDataFuture;
+  late Future getUserTimelinesDataFuture;
+
   @override
   void initState() {
     super.initState();
@@ -46,6 +47,7 @@ class _MyLocationsState extends State<MyLocations> with SingleTickerProviderStat
     getUserTimelinesDataFuture = customer.getCreatedTimelines();
 
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -72,19 +74,19 @@ class _MyLocationsState extends State<MyLocations> with SingleTickerProviderStat
               TextStyle(fontFamily: "nunito", fontWeight: FontWeight.bold),
           controller: tabController,
           indicatorColor: kdarkBlue,
-          tabs: <Widget>[
+          tabs: const <Widget>[
             Tab(text: "Cities"),
             Tab(text: "Hotels"),
             Tab(text: "Timelines"),
           ],
         ),
         body: TabBarView(
+          controller: tabController,
           children: <Widget>[
             // Cities BarView
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              child: ListView(
                 children: <Widget>[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -127,8 +129,7 @@ class _MyLocationsState extends State<MyLocations> with SingleTickerProviderStat
             // Hotels BarView
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              child: ListView(
                 children: <Widget>[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -162,7 +163,6 @@ class _MyLocationsState extends State<MyLocations> with SingleTickerProviderStat
                             else return createHotelsListView(context, snapshot);
                         }
                       },
-
                     )
                   ),
                 ],
@@ -171,8 +171,7 @@ class _MyLocationsState extends State<MyLocations> with SingleTickerProviderStat
             // Timelines BarView
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              child: ListView(
                 children: <Widget>[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -213,7 +212,6 @@ class _MyLocationsState extends State<MyLocations> with SingleTickerProviderStat
               ),
             ),
           ],
-          controller: tabController,
         ),
       ),
     );
@@ -224,7 +222,7 @@ class _MyLocationsState extends State<MyLocations> with SingleTickerProviderStat
     dynamic hotels = snapshot.data['message']['hotels'];
     int size = int.parse(snapshot.data['message']['size'].toString());
     // debugPrint('hotels:' + snapshot.data['message']['hotels'][0]['name'].toString());
-    return new ListView.builder(
+    return ListView.builder(
       controller: hotelsScrollController,
       padding: EdgeInsets.only(
         top: AppBar().preferredSize.height +
@@ -246,13 +244,13 @@ class _MyLocationsState extends State<MyLocations> with SingleTickerProviderStat
                   width:MediaQuery.of(context).size.width-80,
                   height: 200.0,
                   child: ClipRRect(
-                      borderRadius: new BorderRadius.all(
+                      borderRadius: const BorderRadius.all(
                         Radius.circular(15),
                       ),
-                      child: Image.asset(
-                        "assets/sheraton.jpg",
-                        fit: BoxFit.fitHeight,
-                      )),
+                      child: (hotels[index]['image_url'].toString() == '')
+                          ? Image.asset("assets/sheraton.jpg", fit: BoxFit.cover,)
+                          : Image.network(hotels[index]['image_url'].toString(), fit: BoxFit.cover,),
+                  ),
                 ),
                 BoldText(hotels[index]['name'].toString(), 20.0, kblack),
                 Row(
@@ -271,7 +269,7 @@ class _MyLocationsState extends State<MyLocations> with SingleTickerProviderStat
           ),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (_) {
-              return HotelOverViewScreen( shop: Shop(hotels[index]['id'], hotels[index]['name'], hotels[index]['price'], hotels[index]['location'], hotels[index]['about'], hotels[index]['user_id']),);
+              return HotelOverViewScreen( shop: Shop(hotels[index]['id'], hotels[index]['name'], hotels[index]['price'], hotels[index]['location'], hotels[index]['about'], hotels[index]['user_id'], hotels[index]['average_like'], hotels[index]['image_url']), key: Key('null'),);
             }));
           },
         );
@@ -282,7 +280,7 @@ class _MyLocationsState extends State<MyLocations> with SingleTickerProviderStat
     dynamic cities = snapshot.data['message']['cities'];
     int size = int.parse(snapshot.data['message']['size'].toString());
 
-    return new ListView.builder(
+    return ListView.builder(
       controller: citiesScrollController,
       padding: EdgeInsets.only(
         top: AppBar().preferredSize.height +
@@ -304,13 +302,13 @@ class _MyLocationsState extends State<MyLocations> with SingleTickerProviderStat
                   width:MediaQuery.of(context).size.width-80,
                   height: 200.0,
                   child: ClipRRect(
-                      borderRadius: new BorderRadius.all(
+                      borderRadius: const BorderRadius.all(
                         Radius.circular(15),
                       ),
-                      child: Image.asset(
-                        "assets/sheraton.jpg",
-                        fit: BoxFit.fitHeight,
-                      )),
+                      child: (cities[index]['image_url'].toString() == '')
+                          ? Image.asset("assets/sheraton.jpg", fit: BoxFit.cover,)
+                          : Image.network(cities[index]['image_url'].toString(), fit: BoxFit.cover,),
+                  ),
                 ),
                 BoldText(cities[index]['name'].toString(), 20.0, kblack),
                 Row(
@@ -329,7 +327,7 @@ class _MyLocationsState extends State<MyLocations> with SingleTickerProviderStat
           ),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (_) {
-              return CityOverViewScreen( city: new City(cities[index]['id'], cities[index]['name'], cities[index]['location'], cities[index]['about'], cities[index]['user_id']),);
+              return CityOverViewScreen( city: City(cities[index]['id'], cities[index]['name'], cities[index]['location'], cities[index]['about'], cities[index]['user_id'], cities[index]['average_like'], cities[index]['image_url']), key: Key('null'),);
             }));
           },
         );
@@ -340,7 +338,7 @@ class _MyLocationsState extends State<MyLocations> with SingleTickerProviderStat
     dynamic timelines = snapshot.data['message']['timelines'];
     int size = int.parse(snapshot.data['message']['size'].toString());
 
-    return new ListView.builder(
+    return ListView.builder(
       controller: citiesScrollController,
       padding: EdgeInsets.only(
         top: AppBar().preferredSize.height +
@@ -363,13 +361,13 @@ class _MyLocationsState extends State<MyLocations> with SingleTickerProviderStat
                   width:MediaQuery.of(context).size.width-80,
                   height: 200.0,
                   child: ClipRRect(
-                      borderRadius: new BorderRadius.all(
+                      borderRadius: const BorderRadius.all(
                         Radius.circular(15),
                       ),
-                      child: Image.asset(
-                        "assets/sheraton.jpg",
-                        fit: BoxFit.fitHeight,
-                      )),
+                      child: (timelines[index]['image_url'].toString() == '')
+                          ? Image.asset("assets/sheraton.jpg", fit: BoxFit.cover,)
+                          : Image.network(timelines[index]['image_url'].toString(), fit: BoxFit.cover,),
+                  ),
                 ),
                 NormalText(timelines[index]['body'].toString(), kgreyDark, 12.0),
               ],
@@ -377,7 +375,7 @@ class _MyLocationsState extends State<MyLocations> with SingleTickerProviderStat
           ),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (_) {
-              return TimelineReviewsScreen( timeline: new Timeline(timelines[index]['id'], timelines[index]['title'], timelines[index]['body'], timelines[index]['user_id']),);
+              return TimelineOverViewScreen( timeline: Timeline(timelines[index]['id'], timelines[index]['title'], timelines[index]['body'], timelines[index]['user_id'], timelines[index]['average_like'], timelines[index]['image_url']), key: Key('null'),);
             }));
           },
         );

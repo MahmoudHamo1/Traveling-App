@@ -7,7 +7,7 @@ class BestRatedImage extends StatelessWidget {
   final String imageUrl;
   final String name;
   final String location;
-  final double rate;
+  final String rate;
 
   BestRatedImage(this.imageUrl, this.name, this.location,this.rate);
 
@@ -29,31 +29,40 @@ class BestRatedImage extends StatelessWidget {
                   borderRadius: new BorderRadius.all(
                     Radius.circular(15),
                   ),
-                  child: Image.asset(
-                    imageUrl,
-                    fit: BoxFit.fitHeight,
-                  )),
+                  child: (imageUrl == '')
+                      ? Image.asset("assets/hotel.jpg", fit: BoxFit.cover,)
+                      : Image.network(imageUrl, fit: BoxFit.cover,),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: BoldText(name, 20.0, kblack),
+              child: BoldTextEllips(name, 20.0, kblack),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  NormalText(location, kgreyDark, 16.0),
-                  Icon(
-                    Icons.location_on,
-                    color: kgreyDark,
-                    size: 16.0,
+                  Expanded(
+                    child: NormalTextEllips(location, kgreyDark, 16.0),
                   ),
-                  SizedBox(
-                    width: 60.0,
+                  Expanded(
+                    child: Icon(
+                      Icons.location_on,
+                      color: kgreyDark,
+                      size: 16.0,
+                    ),
                   ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
                   Container(
-                    width: 50.0,
+                    width: 55.0,
                     decoration: BoxDecoration(
                       color: korange,
                       borderRadius: BorderRadius.circular(10.0),
@@ -67,7 +76,9 @@ class BestRatedImage extends StatelessWidget {
                           color: kwhite,
                           size: 15.0,
                         ),
-                        BoldText(rate.toString(), 15.0, kwhite)
+                        Expanded(
+                          child: BoldTextEllips(rate != null ? rate : '0', 15.0, kwhite)
+                        )
                       ],
                     ),
                   ),

@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:lets_head_out/Screens/BoardingView/sliderDots.dart';
-import 'package:lets_head_out/Screens/BoardingView/sliderItems.dart';
-import 'package:lets_head_out/utils/TextStyles.dart';
-import 'package:lets_head_out/utils/consts.dart';
+import 'package:trawell/Screens/BoardingView/sliderDots.dart';
+import 'package:trawell/Screens/BoardingView/sliderItems.dart';
+import 'package:trawell/utils/TextStyles.dart';
+import 'package:trawell/utils/consts.dart';
 
 import '../SignInPage.dart';
 import 'Slider.dart';
@@ -70,7 +70,8 @@ class _SliderLayoutViewState extends State<SliderLayoutView> {
 
                     ),
                     onTap: () {
-                      _pageController.animateToPage(_pageController.page.toInt() + 1,
+                      int page = (_pageController.page?.toInt()) as int;
+                      _pageController.animateToPage( page + 1,
                           duration: Duration(milliseconds: 400),
                           curve: Curves.easeIn
                       );

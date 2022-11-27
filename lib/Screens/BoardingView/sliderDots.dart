@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lets_head_out/utils/consts.dart';
+import 'package:trawell/utils/consts.dart';
 
 class SlideDots extends StatelessWidget {
   bool isActive;

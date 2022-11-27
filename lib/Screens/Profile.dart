@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lets_head_out/Screens/MyInformationScreen.dart';
-import 'package:lets_head_out/utils/TextStyles.dart';
-import 'package:lets_head_out/utils/consts.dart';
+import 'package:trawell/Screens/MyInformationScreen.dart';
+import 'package:trawell/utils/TextStyles.dart';
+import 'package:trawell/utils/consts.dart';
 
 import '../customer.dart';
 import 'AboutUsScreen.dart';
+import 'ChoseImageScreen.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -34,30 +35,31 @@ class _ProfileState extends State<Profile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  CircleAvatar(
-                    backgroundColor: kgreyDark,
-                    radius: 50,
-                    child: Icon(Icons.person,size: 50,),
+                  InkWell(
+                    child: (customer.imageUrl == '')
+                      ? CircleAvatar(
+                            backgroundColor: kgreyDark,
+                            radius: 50,
+                            child:  const Icon(Icons.person,size: 50,)
+                        )
+                      : CircleAvatar(
+                            backgroundColor: kgreyDark,
+                            radius: 50,
+                            backgroundImage: NetworkImage(customer.imageUrl)
+                        ),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) {
+                        return ChoseImageScreen(id: customer.id, isForShop: false, isForCity: false, isForTimeline: false, key: Key('imagePikkeruser1'));
+                      }));
+                    },
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
 
                       BoldText(customer.name, 20.0, kblack),
-                      // Row(
-                      //   children: <Widget>[
-                      //     NormalText("Oran,Algeria",kgreyDark,16),
-                      //     Icon(
-                      //       Icons.location_on,
-                      //       color: kgreyDark,
-                      //       size: 15.0,
-                      //     ),
-                      //   ],
-                      // ),
                     ],
                   ),
-
-
                 ],
               ),
             ),
@@ -73,11 +75,11 @@ class _ProfileState extends State<Profile> {
                 builder: (context) => MyInformationScreen(),
               ));
             }),
-            ProfileItem(Icons.credit_card,"Payment", (){}),
-            ProfileItem(Icons.settings,"Settings", (){}),
-            ProfileItem(Icons.help,"Help", (){}),
-            ProfileItem(Icons.favorite_border,"Favourite", (){}),
-            ProfileItem(Icons.library_books,"Terms and Conditions", (){}),
+            // ProfileItem(Icons.credit_card,"Payment", (){}),
+            // ProfileItem(Icons.settings,"Settings", (){}),
+            // ProfileItem(Icons.help,"Help", (){}),
+            // ProfileItem(Icons.favorite_border,"Favourite", (){}),
+            // ProfileItem(Icons.library_books,"Terms and Conditions", (){}),
             ProfileItem(Icons.info,"About Us ", (){
               Navigator.of(context, rootNavigator: true)
                   .push(CupertinoPageRoute<bool>(
@@ -85,7 +87,9 @@ class _ProfileState extends State<Profile> {
                 builder: (context) => AboutUsScreen(),
               ));
             }),
-            ProfileItem(Icons.exit_to_app,"Sign Out", (){}),
+            ProfileItem(Icons.exit_to_app,"Sign Out", (){
+              Navigator.of(context).pop();
+            }),
 
 
           ],

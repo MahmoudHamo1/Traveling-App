@@ -1,26 +1,64 @@
 import 'package:flutter/material.dart';
-import 'package:lets_head_out/utils/Buttons.dart';
-import 'package:lets_head_out/utils/TextStyles.dart';
-import 'package:lets_head_out/utils/consts.dart';
-
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:trawell/utils/Buttons.dart';
+import 'package:trawell/utils/TextStyles.dart';
+import 'package:trawell/utils/consts.dart';
 import '../city.dart';
 import '../customer.dart';
+import 'ChoseImageScreen.dart';
+import 'ZegoLiveSteamPage.dart';
 
 class CityOverViewScreen extends StatefulWidget {
   final City city;
 
-  const CityOverViewScreen({Key key, this.city}) : super(key: key);
+  const CityOverViewScreen({required Key key, required this.city}) : super(key: key);
   @override
   _CityOverViewScreenState createState() => _CityOverViewScreenState();
 }
 
 class _CityOverViewScreenState extends State<CityOverViewScreen>
     with SingleTickerProviderStateMixin {
-  TabController tabController;
-  Customer customer;
-  TextEditingController reviewController;
-  ScrollController scrollController;
-  Future getReviewsData;
+  late TabController tabController;
+  late Customer customer;
+  late TextEditingController reviewController;
+  late ScrollController scrollController;
+  late Future getReviewsData;
+  FlutterTts flutterTts = FlutterTts();
+  bool isPlaying = false;
+
+  @override
+  void initState() {
+    super.initState();
+    tabController = new TabController(length: 2, vsync: this);
+    reviewController = new TextEditingController();
+    scrollController = new ScrollController();
+    customer = Customer();
+
+    getReviewsData = customer.getCityReviews(widget.city.id);
+
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    tabController.dispose();
+    reviewController.dispose();
+    scrollController.dispose();
+  }
+
+  speak(String text) async {
+    await flutterTts.setLanguage("en-US");
+    await flutterTts.setPitch(0.8);
+    await flutterTts.speak(text);
+    await flutterTts.awaitSpeakCompletion(true);
+    setState(() {
+      isPlaying = false;
+    });
+  }
+
+  stop() async {
+    await flutterTts.stop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +68,25 @@ class _CityOverViewScreenState extends State<CityOverViewScreen>
         children: <Widget>[
           Positioned(
             top: 0,
-            child: Container(
+            child: InkWell(
+              child: Container(
                 width: MediaQuery.of(context).size.width,
-                child: Image.asset("assets/hotel.jpg")),
+                child: (widget.city.imageUrl == '')
+                    ? Image.asset("assets/alger.jpg", fit: BoxFit.cover,)
+                    : Image.network(widget.city.imageUrl, fit: BoxFit.cover,),
+              ),
+              onTap: () {
+                if (widget.city.userId == customer.id) {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) {
+                    return ChoseImageScreen(id: widget.city.id,
+                        isForShop: false,
+                        isForCity: true,
+                        isForTimeline: false,
+                        key: Key('imagePikkercty1'));
+                  }));
+                }
+              },
+            )
           ),
           Positioned(
             top: 200.0,
@@ -44,11 +98,11 @@ class _CityOverViewScreenState extends State<CityOverViewScreen>
                 child: Scaffold(
                   appBar: TabBar(
                     labelColor: kdarkBlue,
-                    labelStyle: TextStyle(
+                    labelStyle: const TextStyle(
                         fontFamily: "nunito", fontWeight: FontWeight.bold),
                     controller: tabController,
                     indicatorColor: kdarkBlue,
-                    tabs: <Widget>[
+                    tabs: const <Widget>[
                       Tab(text: "OverView"),
                       //Tab(text: "Location"),
                       Tab(text: "Review"),
@@ -58,6 +112,7 @@ class _CityOverViewScreenState extends State<CityOverViewScreen>
                   body: Stack(
                     children: <Widget>[
                       TabBarView(
+                        controller: tabController,
                         children: <Widget>[
                           // main view bar
                           Padding(
@@ -65,11 +120,70 @@ class _CityOverViewScreenState extends State<CityOverViewScreen>
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                BoldText(widget.city.name, 20.0, kblack),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    BoldText(widget.city.name, 20.0, kblack),
+                                    InkWell(
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(32.0),
+                                      ),
+                                      onTap: () async {
+                                        var rating = await showRatingDialog(context, double.parse(widget.city.averageLikes ?? '0.0'), widget.city.id, 2 ); // 1: hotel, 2:city, 3:timeline
+                                      },
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(
+                                          Icons.favorite_border,
+                                        ),
+                                      ),
+                                    ),
+                                    widget.city.userId == customer.id
+                                      ? InkWell(
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(32.0),
+                                      ),
+                                      onTap: () async {
+                                        Customer customer = Customer();
+                                        BackendMessage response;
+                                        bool isConfirmed = await showMyConfirmDialog(context);
+                                        if (isConfirmed) {
+                                          response = await customer.deleteCity(widget.city.id);
+                                          await showMyDialog(context, response.status.toString(), response.message.toString());
+                                          Navigator.of(context).pop();
+                                        }
+
+                                      },
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(
+                                          Icons.delete,
+                                        ),
+                                      ),
+                                    )
+                                      : InkWell(
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(32.0),
+                                      ),
+                                      onTap: () async {
+                                        Navigator.push(context, MaterialPageRoute(builder: (_) {
+                                          return ZegoLiveStreamPage(isHost: false, userId: customer.id, userName: customer.name, liveId: widget.city.userId, key: Key('ZegoLiveStreamPagecity1'),);
+                                        }));
+                                      },
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(
+                                          Icons.live_tv_sharp,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                                 Row(
                                   children: <Widget>[
-                                    BoldText("4.5 Stars", 12.0, korange),
-                                    SizedBox(
+                                    BoldText(widget.city.averageLikes != null ? widget.city.averageLikes : "0", 12.0, korange),
+                                    BoldText(" Stars", 12.0, korange),
+                                    const SizedBox(
                                       width: 16.0,
                                     ),
                                     Icon(
@@ -80,14 +194,14 @@ class _CityOverViewScreenState extends State<CityOverViewScreen>
                                     NormalText(widget.city.location, kgreyDark, 15.0),
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10.0,
                                 ),
                                 Container(
                                   height: 2,
                                   color: kgreyFill,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 Row(
@@ -95,52 +209,54 @@ class _CityOverViewScreenState extends State<CityOverViewScreen>
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     BoldText("About this city", 20.0, kblack),
-                                    BoldText("More", 16, kdarkBlue)
+                                    ElevatedButton(
+                                      style: ButtonStyle(
+                                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                              borderRadius: const BorderRadius.only(
+                                                  topLeft: Radius.circular(16),
+                                                  bottomLeft: Radius.circular(16),
+                                                  topRight: Radius.circular(0),
+                                                  bottomRight: Radius.circular(0)),
+                                              side: BorderSide(color: Theme.of(context).primaryColor)
+                                              )
+                                          )
+                                      ),
+                                      onPressed: () {
+                                        isPlaying ? stop() : speak(widget.city.about);
+                                        setState( () {
+                                          isPlaying = !isPlaying;
+                                        });
+                                      },
+                                      child: !isPlaying
+                                          ? const Text(
+                                          "🔊 Read out")
+                                          : const Text(
+                                          "🛑 Stop"),
+                                    ),
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 NormalText(
                                     widget.city.about,
                                     kblack,
                                     12.0),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10.0,
                                 ),
                                 Container(
                                   height: 2,
                                   color: kgreyFill,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
+
                               ],
                             ),
                           ),
-                          // location bar
-                          // Padding(
-                          //   padding: const EdgeInsets.all(16.0),
-                          //   child: Container(
-                          //     child: Column(
-                          //       crossAxisAlignment: CrossAxisAlignment.start,
-                          //       children: <Widget>[
-                          //         BoldText("Location", 20.0, kblack),
-                          //         ClipRRect(
-                          //           borderRadius: BorderRadius.circular(20.0),
-                          //           child: Image.asset(
-                          //             "assets/plazamap.png",
-                          //             fit: BoxFit.fill,
-                          //             height:
-                          //                 MediaQuery.of(context).size.width -
-                          //                     90,
-                          //             width: MediaQuery.of(context).size.width,
-                          //           ),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
                           // reviews bar
                           Container(
                             child: Padding(
@@ -196,7 +312,6 @@ class _CityOverViewScreenState extends State<CityOverViewScreen>
                             ),
                           ),
                         ],
-                        controller: tabController,
                       ),
                     ],
                   ),
@@ -204,13 +319,16 @@ class _CityOverViewScreenState extends State<CityOverViewScreen>
               ),
             ),
           ),
-          // Positioned(
-          //     top: 580,
-          //     left: 5,
-          //     child: WideButton(
-          //       "BOOK NOW",
-          //       () {},
-          //     )),
+          if (isPlaying)
+              Positioned(
+                  top: 450,
+                  left: 50,
+                  child: SizedBox(
+                      height: 300,
+                      width: 300,
+                      child: Image.asset('assets/bot.png')
+                  )
+              ),
         ],
       ),
     );
@@ -251,22 +369,4 @@ class _CityOverViewScreenState extends State<CityOverViewScreen>
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    tabController = new TabController(length: 2, vsync: this);
-    reviewController = new TextEditingController();
-    scrollController = new ScrollController();
-    customer = Customer();
-
-    getReviewsData = customer.getCityReviews(widget.city.id);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    tabController.dispose();
-    reviewController.dispose();
-    scrollController.dispose();
-  }
 }

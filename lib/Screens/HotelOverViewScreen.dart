@@ -1,26 +1,64 @@
 import 'package:flutter/material.dart';
-import 'package:lets_head_out/utils/Buttons.dart';
-import 'package:lets_head_out/utils/TextStyles.dart';
-import 'package:lets_head_out/utils/consts.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:trawell/utils/Buttons.dart';
+import 'package:trawell/utils/TextStyles.dart';
+import 'package:trawell/utils/consts.dart';
 
 import '../customer.dart';
 import '../shop.dart';
+import 'ChoseImageScreen.dart';
+import 'ZegoLiveSteamPage.dart';
 
 class HotelOverViewScreen extends StatefulWidget {
   final Shop shop;
 
-  const HotelOverViewScreen({Key key, this.shop}) : super(key: key);
+  const HotelOverViewScreen({required Key key, required this.shop}) : super(key: key);
   @override
   _HotelOverViewScreenState createState() => _HotelOverViewScreenState();
 }
 
 class _HotelOverViewScreenState extends State<HotelOverViewScreen>
     with SingleTickerProviderStateMixin {
-  TabController tabController;
-  Customer customer;
-  TextEditingController reviewController;
-  ScrollController scrollController;
-  Future getReviewsData;
+  late TabController tabController;
+  late Customer customer;
+  late TextEditingController reviewController;
+  late ScrollController scrollController;
+  late Future getReviewsData;
+  FlutterTts flutterTts = FlutterTts();
+  bool isPlaying = false;
+
+  @override
+  void initState() {
+    super.initState();
+    tabController = new TabController(length: 2, vsync: this);
+    reviewController = new TextEditingController();
+    scrollController = new ScrollController();
+    customer = Customer();
+
+    getReviewsData = customer.getHotelReviews(widget.shop.id);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    tabController.dispose();
+    reviewController.dispose();
+    scrollController.dispose();
+  }
+
+  speak(String text) async {
+    await flutterTts.setLanguage("en-US");
+    await flutterTts.setPitch(0.8);
+    await flutterTts.speak(text);
+    await flutterTts.awaitSpeakCompletion(true);
+    setState(() {
+      isPlaying = false;
+    });
+  }
+
+  stop() async {
+    await flutterTts.stop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +68,25 @@ class _HotelOverViewScreenState extends State<HotelOverViewScreen>
         children: <Widget>[
           Positioned(
             top: 0,
-            child: Container(
-                width: MediaQuery.of(context).size.width,
-                child: Image.asset("assets/hotel.jpg")),
+            child: InkWell(
+              child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: (widget.shop.imageUrl == '')
+                      ? Image.asset("assets/hotel.jpg", fit: BoxFit.cover,)
+                      : Image.network(widget.shop.imageUrl, fit: BoxFit.cover,),
+              ),
+              onTap: () {
+              if (widget.shop.userId == customer.id) {
+                Navigator.push(context, MaterialPageRoute(builder: (_) {
+                  return ChoseImageScreen(id: widget.shop.id,
+                      isForShop: true,
+                      isForCity: false,
+                      isForTimeline: false,
+                      key: Key('imagePikkershop1'));
+                }));
+              }
+              },
+            )
           ),
           Positioned(
             top: 200.0,
@@ -58,16 +112,76 @@ class _HotelOverViewScreenState extends State<HotelOverViewScreen>
                   body: Stack(
                     children: <Widget>[
                       TabBarView(
+                        controller: tabController,
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                BoldText(widget.shop.name, 20.0, kblack),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    BoldText(widget.shop.name, 20.0, kblack),
+                                    InkWell(
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(32.0),
+                                      ),
+                                      onTap: () async {
+                                        var rating = await showRatingDialog(context, double.parse(widget.shop.averageLikes ?? '0.0'), widget.shop.id, 1 ); // 1: hotel, 2:city, 3:timeline
+                                      },
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(
+                                          Icons.favorite_border,
+                                        ),
+                                      ),
+                                    ),
+                                    widget.shop.userId == customer.id
+                                      ? InkWell(
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(32.0),
+                                        ),
+                                        onTap: () async {
+                                          Customer customer = Customer();
+                                          BackendMessage response;
+                                          bool isConfirmed = await showMyConfirmDialog(context);
+                                          if (isConfirmed) {
+                                            response = await customer.deleteHotel(widget.shop.id);
+                                            await showMyDialog(context, response.status.toString(), response.message.toString());
+                                            Navigator.of(context).pop();
+                                          }
+
+                                        },
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Icon(
+                                            Icons.delete,
+                                          ),
+                                        ),
+                                    )
+                                      : InkWell(
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(32.0),
+                                        ),
+                                        onTap: () async {
+                                          Navigator.push(context, MaterialPageRoute(builder: (_) {
+                                            return ZegoLiveStreamPage(isHost: false, userId: customer.id, userName: customer.name, liveId: widget.shop.userId, key: Key('ZegoLiveStreamPagehotel1'),);
+                                          }));
+                                        },
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Icon(
+                                            Icons.live_tv_sharp,
+                                          ),
+                                        ),
+                                    ),
+                                  ],
+                                ),
                                 Row(
                                   children: <Widget>[
-                                    BoldText("4.5 Stars", 12.0, korange),
+                                    BoldText(widget.shop.averageLikes != null ? widget.shop.averageLikes : "0", 12.0, korange),
+                                    BoldText(" Stars", 12.0, korange),
                                     SizedBox(
                                       width: 16.0,
                                     ),
@@ -79,19 +193,19 @@ class _HotelOverViewScreenState extends State<HotelOverViewScreen>
                                     NormalText(widget.shop.location, kgreyDark, 15.0),
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 NormalText(
                                     "${widget.shop.price} \$ per night", kgreyDark, 16.0),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10.0,
                                 ),
                                 Container(
                                   height: 2,
                                   color: kgreyFill,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 Row(
@@ -99,24 +213,48 @@ class _HotelOverViewScreenState extends State<HotelOverViewScreen>
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     BoldText("About this hotel", 20.0, kblack),
-                                    BoldText("More", 16, kdarkBlue)
+                                    ElevatedButton(
+                                      style: ButtonStyle(
+                                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                  borderRadius: const BorderRadius.only(
+                                                      topLeft: Radius.circular(16),
+                                                      bottomLeft: Radius.circular(16),
+                                                      topRight: Radius.circular(0),
+                                                      bottomRight: Radius.circular(0)),
+                                                  side: BorderSide(color: Theme.of(context).primaryColor)
+                                              )
+                                          )
+                                      ),
+                                      onPressed: () {
+                                        isPlaying ? stop() : speak(widget.shop.about);
+                                        setState( () {
+                                          isPlaying = !isPlaying;
+                                        });
+                                      },
+                                      child: !isPlaying
+                                          ? const Text(
+                                          "🔊 Read out")
+                                          : const Text(
+                                          "🛑 Stop"),
+                                    ),
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 NormalText(
                                     widget.shop.about,
                                     kblack,
                                     12.0),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10.0,
                                 ),
                                 Container(
                                   height: 2,
                                   color: kgreyFill,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 Row(
@@ -127,7 +265,7 @@ class _HotelOverViewScreenState extends State<HotelOverViewScreen>
                                     BoldText("More", 16, kdarkBlue),
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 Row(
@@ -145,28 +283,6 @@ class _HotelOverViewScreenState extends State<HotelOverViewScreen>
                               ],
                             ),
                           ),
-                          // Padding(
-                          //   padding: const EdgeInsets.all(16.0),
-                          //   child: Container(
-                          //     child: Column(
-                          //       crossAxisAlignment: CrossAxisAlignment.start,
-                          //       children: <Widget>[
-                          //         BoldText("Location", 20.0, kblack),
-                          //         ClipRRect(
-                          //           borderRadius: BorderRadius.circular(20.0),
-                          //           child: Image.asset(
-                          //             "assets/plazamap.png",
-                          //             fit: BoxFit.fill,
-                          //             height:
-                          //                 MediaQuery.of(context).size.width -
-                          //                     90,
-                          //             width: MediaQuery.of(context).size.width,
-                          //           ),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
                           Container(
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),
@@ -221,7 +337,6 @@ class _HotelOverViewScreenState extends State<HotelOverViewScreen>
                             ),
                           ),
                         ],
-                        controller: tabController,
                       ),
                     ],
                   ),
@@ -229,13 +344,37 @@ class _HotelOverViewScreenState extends State<HotelOverViewScreen>
               ),
             ),
           ),
-          // Positioned(
-          //     top: 580,
-          //     left: 5,
-          //     child: WideButton(
-          //       "BOOK NOW",
-          //       () {},
-          //     )),
+          Positioned(
+            top: 30,
+            right: 8,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(32.0),
+                ),
+                onTap: () async {
+                  var rating = await showRatingDialog(context, double.parse(widget.shop.averageLikes == null ? '0.0' : widget.shop.averageLikes), widget.shop.id, 1 ); // 1: hotel, 2:city, 3:timeline
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(
+                    Icons.favorite_border,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          if (isPlaying)
+            Positioned(
+                top: 450,
+                left: 50,
+                child: SizedBox(
+                    height: 300,
+                    width: 300,
+                    child: Image.asset('assets/bot.png')
+                )
+            ),
         ],
       ),
     );
@@ -274,22 +413,5 @@ class _HotelOverViewScreenState extends State<HotelOverViewScreen>
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    tabController = new TabController(length: 2, vsync: this);
-    reviewController = new TextEditingController();
-    scrollController = new ScrollController();
-    customer = Customer();
 
-    getReviewsData = customer.getHotelReviews(widget.shop.id);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    tabController.dispose();
-    reviewController.dispose();
-    scrollController.dispose();
-  }
 }

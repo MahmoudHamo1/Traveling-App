@@ -1,20 +1,24 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
-import 'package:lets_head_out/utils/consts.dart';
+import 'package:trawell/utils/consts.dart';
 
 class Timeline  {
 
-  String id;
-  String title;
-  String body;
-  String userId;
+  String id = '';
+  String title = '';
+  String body = '';
+  String userId = '';
+  String averageLikes = '';
+  String imageUrl = '';
 
-  Timeline(String id, String title, String body, String useId) {
-    this.id = id;
-    this.title = title;
-    this.body = body;
-    this.userId = useId;
-  }
+  Timeline(
+      this.id,
+      this.title,
+      this.body,
+      this.userId,
+      this.averageLikes,
+      this.imageUrl
+  );
 
 }
