@@ -179,7 +179,7 @@ class ChoseImageScreenState extends State<ChoseImageScreen> {
   }
 
   Future <BackendMessage> updateShopsImageToBackend(String id, String imageURL) async {
-    Response response = await post(Uri.parse("https://travelingapp.000webhostapp.com/update_hotel_image.php"),
+    Response response = await post(Uri.parse("https://travelingapp2.000webhostapp.com/update_hotel_image.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -191,7 +191,7 @@ class ChoseImageScreenState extends State<ChoseImageScreen> {
   }
 
   Future <BackendMessage> updateCitiesImageToBackend(String id, String imageURL) async {
-    Response response = await post(Uri.parse("https://travelingapp.000webhostapp.com/update_city_image.php"),
+    Response response = await post(Uri.parse("https://travelingapp2.000webhostapp.com/update_city_image.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -203,7 +203,7 @@ class ChoseImageScreenState extends State<ChoseImageScreen> {
   }
 
   Future <BackendMessage> updateUsersImageToBackend(String id, String imageURL) async {
-    Response response = await post(Uri.parse("https://travelingapp.000webhostapp.com/update_user_image.php"),
+    Response response = await post(Uri.parse("https://travelingapp2.000webhostapp.com/update_user_image.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -215,7 +215,7 @@ class ChoseImageScreenState extends State<ChoseImageScreen> {
   }
 
   Future <BackendMessage> updateTimelinesImageToBackend(String id, String imageURL) async {
-    Response response = await post(Uri.parse("https://travelingapp.000webhostapp.com/update_timeline_image.php"),
+    Response response = await post(Uri.parse("https://travelingapp2.000webhostapp.com/update_timeline_image.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

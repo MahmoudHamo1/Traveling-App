@@ -19,7 +19,7 @@ class Customer  {
   }
 
   Future <BackendMessage> loginToBackend(String email, String password) async {
-    Response response = await post(Uri.parse("https://travelingapp.000webhostapp.com/singin.php"),
+    Response response = await post(Uri.parse("https://travelingapp2.000webhostapp.com/singin.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Access-Control-Allow-Origin': '*'
@@ -39,7 +39,7 @@ class Customer  {
     return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
   }
   Future <BackendMessage> signupToBackend(String name, String email, String password, String imageUrl) async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/singup.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/singup.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -58,7 +58,7 @@ class Customer  {
   }
 
   Future <BackendMessage> updateName(String name) async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/update_name.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/update_name.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -71,7 +71,7 @@ class Customer  {
     return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
   }
   Future <BackendMessage> updatePassword(String password) async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/update_password.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/update_password.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -85,7 +85,7 @@ class Customer  {
   }
 
   Future <BackendMessage> addHotel(String name, String price, String location, String about, String imageUrl) async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/add_hotel.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/add_hotel.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -96,7 +96,7 @@ class Customer  {
     return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
   }
   Future <BackendMessage> addCity(String name, String location, String about, String imageUrl) async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/add_city.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/add_city.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -107,7 +107,7 @@ class Customer  {
     return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
   }
   Future <BackendMessage> addTimeline(String title, String body, String imageUrl) async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/add_timeline.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/add_timeline.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -119,7 +119,7 @@ class Customer  {
   }
 
   Future <dynamic> getCreatedHotels() async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/user_hotels.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/user_hotels.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -129,7 +129,7 @@ class Customer  {
     return jsonResponse;
   }
   Future <dynamic> getCreatedCities() async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/user_cities.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/user_cities.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -139,7 +139,7 @@ class Customer  {
     return jsonResponse;
   }
   Future <dynamic> getCreatedTimelines() async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/user_timelines.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/user_timelines.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -150,7 +150,7 @@ class Customer  {
   }
 
   Future <dynamic> getAllHotels() async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/all_hotels.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/all_hotels.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -160,7 +160,7 @@ class Customer  {
     return jsonResponse;
   }
   Future <dynamic> getAllCities() async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/all_cities.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/all_cities.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -170,7 +170,7 @@ class Customer  {
     return jsonResponse;
   }
   Future <dynamic> getAllTimelines() async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/all_timelines.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/all_timelines.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -181,7 +181,7 @@ class Customer  {
   }
 
   Future <BackendMessage> addHotelReview(String hotelId, String review) async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/add_review.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/add_review.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -192,7 +192,7 @@ class Customer  {
     return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
   }
   Future <BackendMessage> addCityReview(String cityId, String review) async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/add_review.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/add_review.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -203,7 +203,7 @@ class Customer  {
     return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
   }
   Future <BackendMessage> addTimelineReview(String timelineId, String review) async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/add_review.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/add_review.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -215,7 +215,7 @@ class Customer  {
   }
 
   Future <BackendMessage> addHotelLike(String hotelId, double like) async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/add_like.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/add_like.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -226,7 +226,7 @@ class Customer  {
     return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
   }
   Future <BackendMessage> addCityLike(String cityId, double like) async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/add_like.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/add_like.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -237,7 +237,7 @@ class Customer  {
     return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
   }
   Future <BackendMessage> addTimelineLike(String timelineId, double like) async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/add_like.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/add_like.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -249,7 +249,7 @@ class Customer  {
   }
 
   Future <dynamic> getHotelReviews(String hotelId) async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/hotel_reviews.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/hotel_reviews.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -259,7 +259,7 @@ class Customer  {
     return jsonResponse;
   }
   Future <dynamic> getCityReviews(String cityId) async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/city_reviews.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/city_reviews.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -269,7 +269,7 @@ class Customer  {
     return jsonResponse;
   }
   Future <dynamic> getTimelineReviews(String timelineId) async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/timeline_reviews.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/timeline_reviews.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -280,7 +280,7 @@ class Customer  {
   }
 
   Future <BackendMessage> deleteHotel(String hotelId) async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/delete_location.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/delete_location.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -291,7 +291,7 @@ class Customer  {
     return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
   }
   Future <BackendMessage> deleteCity(String cityId) async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/delete_location.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/delete_location.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -302,7 +302,7 @@ class Customer  {
     return BackendMessage(jsonResponse['status'].toString(), jsonResponse['message'].toString());
   }
   Future <BackendMessage> deleteTimeline(String timelineId) async {
-    Response response = await post( Uri.parse("https://travelingapp.000webhostapp.com/delete_location.php"),
+    Response response = await post( Uri.parse("https://travelingapp2.000webhostapp.com/delete_location.php"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
